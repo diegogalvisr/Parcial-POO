@@ -2,8 +2,13 @@ package proyectomundial;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -23,6 +28,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import proyectomundial.DAO.SeleccionDAO;
+import proyectomundial.DAO.UsuarioDAO;
 import proyectomundial.model.Seleccion;
 
 public class GUIManual extends JFrame {
@@ -47,6 +53,9 @@ public class GUIManual extends JFrame {
     
     private JPanel jPanelMenuHome;
     private JLabel btnHome;
+    
+    private JPanel jPanelMenuSesion;
+    private JLabel btnSesion;
     
     private JPanel jPanelMenuSelecciones;
     private JLabel btnSelecciones;
@@ -100,6 +109,9 @@ public class GUIManual extends JFrame {
         jPanelMenuHome = new JPanel();
         btnHome = new JLabel();
         
+        jPanelMenuSesion=new JPanel();
+        btnSesion =new JLabel();
+        
         jPanelMenuSelecciones = new JPanel();
         btnSelecciones = new JLabel();
         
@@ -132,6 +144,8 @@ public class GUIManual extends JFrame {
         
         // Pinta y ajuste diseño del contenedor del panel izquierdo
         pintarPanelIzquierdo();
+        
+        pintarMenuSesion();
         
         
         
@@ -186,6 +200,26 @@ public class GUIManual extends JFrame {
             }
         });   
     }
+    private void pintarMenuSesion() {
+        btnSesion.setIcon(new ImageIcon(getClass().getResource("/resources/icons/home.png"))); // NOI18N
+        btnSesion.setText("Sesion");
+        btnSesion.setForeground(new java.awt.Color(255, 255, 255));
+        
+        JLabel vacioHome = new JLabel();
+        jPanelMenuSesion.setBackground(new java.awt.Color(17, 41, 63));
+        jPanelMenuSesion.setPreferredSize((new java.awt.Dimension(220, 35)));
+        jPanelMenuSesion.setLayout(new BorderLayout(15, 0));
+        jPanelMenuSesion.add(vacioHome, BorderLayout.WEST);
+        jPanelMenuSesion.add(btnSesion, BorderLayout.CENTER);
+        jPanelMenu.add(jPanelMenuSesion);
+        
+        btnSesion.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                System.out.println("Sesion");
+                accionSesion();
+            }
+        });   
+    }
     
     /**
      * Función que se ejecuta cuando el usuario hacer click sobre la opción de navegación Home
@@ -209,7 +243,81 @@ public class GUIManual extends JFrame {
         jPanelMain.repaint();
         jPanelMain.revalidate();
     }
-    
+     private void accionSesion() {
+        
+        jLabelTop.setText("Sesion");
+        //jLabelTopDescription.setText("Bievenido al sistema de gestión de mundiales de fútbol");
+
+        jPanelMain.removeAll();
+        JPanel homePanel = new JPanel();
+        
+        JLabel user = new JLabel("Usuario:");
+        user.setFont(new Font("Helvetica Neue", Font.PLAIN, 16));
+        user.setForeground(new Color(52, 58, 64));
+
+        JTextField usuario = new JTextField();
+        usuario.setPreferredSize(new Dimension(250, 30));
+        usuario.setBorder(BorderFactory.createLineBorder(new Color(108, 117, 125)));
+        
+         JLabel pass = new JLabel("Contraseña:");
+        pass.setFont(new Font("Helvetica Neue", Font.PLAIN, 16));
+        pass.setForeground(new Color(52, 58, 64));
+
+        JTextField contra = new JTextField();
+        contra.setPreferredSize(new Dimension(250, 30));
+        contra.setBorder(BorderFactory.createLineBorder(new Color(108, 117, 125)));
+        
+        JButton validar=new JButton();
+        
+        homePanel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(10, 10, 10, 10);
+        homePanel.add(user, gbc);
+        gbc.gridx = 1;
+        homePanel.add(usuario, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        homePanel.add(pass, gbc);
+        gbc.gridx = 1;
+        homePanel.add(contra, gbc);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+ 
+         JButton enviar = new JButton("Validar");
+        enviar.setPreferredSize(new Dimension(250, 30));
+        enviar.setBackground(Color.blue);
+        enviar.setForeground(Color.WHITE);
+        enviar.setBorder(BorderFactory.createLineBorder(new Color(108, 117, 125)));
+        gbc.gridx = 1;
+        gbc.gridy = 8;
+        homePanel.add(enviar, gbc);
+        
+        
+               enviar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (usuario.getText().isEmpty() || contra.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Todos los campos son requeridos");
+                } else {
+                   UsuarioDAO userDAO=new UsuarioDAO();
+                    if (  userDAO.validarUsuario(usuario.getText(),contra.getText())) {
+                        JOptionPane.showMessageDialog(rootPane, "Credenciales Correctas, se te han habilitado los botones");
+                            haySesion=true;
+                    }else{
+                        JOptionPane.showMessageDialog(rootPane, "Credenciales Incorrectas, sigue intentando hijo");
+                        haySesion=false;
+                    }
+                }
+            }
+        });
+        
+
+
+        jPanelMain.add(homePanel, BorderLayout.CENTER);
+        jPanelMain.repaint();
+        jPanelMain.revalidate();
+    }
     /**
      * Función que se encarga de ajustar los elementos gráficos que componente la opción de navegación de SELECCIONES
      * Define estilos, etiquetas, iconos que decoran la opción del Menú. 
