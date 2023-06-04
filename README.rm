@@ -1,3 +1,10 @@
 
 Nombre Estudiante: JUAN DIEGO GALVIS ROMERO
 Correo Electrónico del estudiante: j_galvis16@unisimon.edu.co
+
+
+Observaciones: 
+Buen manejo de OO. Solución funciona pero no es optima. 
+Imagine que en BD hay 1 millon de registros. La solución aplicada deja de ser optima. 
+Se debía hacer la consulta a BD pasando un filtro en el where con los datos del usuario y contraseña ingresados por el usuario
+Nota examen: 4.5
